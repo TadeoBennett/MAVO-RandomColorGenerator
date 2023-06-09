@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Color Generator</title>
+
+    <!-- BOOSTRAP CDN CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <!-- MAVO CDNs -->
+    <link rel="stylesheet" href="https://get.mavo.io/mavo.css" />
+    <script src="https://get.mavo.io/mavo.js"></script>
+
+    <!-- SWEET ALERT -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- MY STYLES -->
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body mv-app="taskorganizer" mv-storage="local" mv-mode="edit" mv-bar="save" class="taskorganizer">
+    <div class="page">
+        <div class="page-content">
+            <nav class="navbar bg-body-tertiary">
+                <div class="container-fluid">
+                    <span class="navbar-text">
+                        RANDOM COLOR GENERATOR
+                    </span>
+                </div>
+            </nav>
+            <main class="mx-5 mt-3">
+                <!-- foreach color in color:
+                        set(color.redValue, random(0,255,1)); 
+                        set(color.blueValue, random(0,255,1)); 
+                        set(color.greenValue, random(0,255,1)); -->
+                <button class="btn btn-primary mb-3" mv-action="resetRandomColors()">Reset All to Random Color</button>
+                <div class="detailsBoxContainer d-flex gap-4 flex-wrap mb-3" mv-list>
+                    <div class="d-flex flex-column detailsBox justify-content-center text-center" mv-list-item
+                        property="color">
+                        <button
+                            mv-action="set(border_color, getRandomHexColor()); set(colorText, 'rgb(' & set(redValue, [random(0,255,1)]) & ', ' & set(blueValue, [random(0,255,1)]) & ', ' & set(greenValue, [random(0,255,1)]) & ')')">Generate
+                            Random Color</button>
+                        <!-- <input hidden property="colorindex" value="[$index]"> -->
+                        <div property="colorbox" class="colorBox d-flex justify-content-center align-items-center"
+                            style="[custom_user_styles]">
+                            <button class="lockButton lock" >
+                                <i class="lockIcon fa-solid fa-lock-open"></i>
+                            </button>
+                            <button class="copyCSS" property="cssCopy" value=[custom_user_styles]
+                                onclick='copyCSS(this.value)'>Copy
+                                CSS</button>
+                        </div>
+                        <input hidden property="custom_user_styles" value="
+                        background-color: rgb( [redValue], [blueValue], [greenValue], [opacity]);
+    border: [border_width][border_metric] [border_type] [border_color];
+    width: 300px;
+    height: 400px;
+                        ">
+                        <div class="pt-2">rgb(
+                            <input class="d-inline redValue" type="number" data-constraint="min:0, max:255"
+                                property="redValue" value="255"
+                                oninput="if(this.value > 255) this.value = 255; if(this.value.length > 3) this.value = this.value.slice(0, 3);">,
+                            <input class="d-inline blueValue" type="number" data-constraint="min:0, max:255"
+                                property="blueValue" value="255"
+                                oninput="if(this.value > 255) this.value = 255; if(this.value.length > 3) this.value = this.value.slice(0, 3);">,
+                            <input class="d-inline greenValue" type="number" data-constraint="min:0, max:255"
+                                property="greenValue" value="255"
+                                oninput="if(this.value > 255) this.value = 255; if(this.value.length > 3) this.value = this.value.slice(0, 3);">,
+                            <input class="d-inline me-1" type="text" property="opacityText" value="[opacity]" readonly>);
+                        </div>
+                        <div class="d-flex row align-items-center">
+                            <div class="col">Opacity: [color.opacity]</div>
+                            <div class="col"><input type="range" property="opacity" min="0" max="1" step="0.01"
+                                    value="1" title="[opacity]"></div>
+                        </div>
+                        <div class="d-flex row align-items-center">
+                            <label class="col-6">
+                                border width:
+                            </label>
+                            <div class="col-6">
+                                <input type="range" max="20" step="1" property="border_width" title="[border_width]"
+                                    value="0">
+                            </div>
+                        </div>
+                        <div class="d-flex row align-items-center">
+                            <label class="col-6">
+                                border metric:
+                            </label>
+                            <select property="border_metric" class="col-6">
+                                <option value="%">%</option>
+                                <option value="px" selected>px</option>
+                                <option value="cm">cm</option>
+                                <option value="mm">mm</option>
+                                <option value="in">in</option>
+                                <option value="pt">pt</option>
+                                <option value="pc">pc</option>
+                                <option value="rem">rem</option>
+                                <option value="em">em</option>
+                                <option value="ch">ch</option>
+                                <option value="vw">vw</option>
+                                <option value="vh">vh</option>
+                                <option value="vmin">vmin</option>
+                                <option value="vmax">vmax</option>
+                            </select>
+                        </div>
+                        <div class="d-flex row align-items-center">
+                            <label class="col-6">
+                                border style:
+                            </label>
+                            <select property="border_type" class="col-6">
+                                <option value="none">none</option>
+                                <option value="hidden">hidden</option>
+                                <option value="dotted">dotted</option>
+                                <option value="dashed">dashed</option>
+                                <option value="solid">solid</option>
+                                <option value="double">double</option>
+                                <option value="groove">groove</option>
+                                <option value="ridge">ridge</option>
+                                <option value="inset">inset</option>
+                                <option value="outset">outset</option>
+                            </select>
+                        </div>
+                        <div class="d-flex row align-items-center">
+                            <label class="col-6">
+                                border color:
+                            </label>
+                            <div class="col-6 d-flex row" style="padding-right: 0px; --bs-gutter-x: 0rem;">
+                                <input type="color" property="border_color" mv-color class="col-6 border_color">
+                                <div class="col-6">
+                                    <input readonly type="text" property="borderColorValue" value="[border_color]" class="p-0 ps-2 w-100 border_color"></input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <footer>
+        Made By Tadeo Bennett | 2023
+    </footer>
+</body>
+
+<!-- BOOSTRAP CDN JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+
+<!-- FONT AWESOME -->
+<script src="https://kit.fontawesome.com/b7e4318d61.js" crossorigin="anonymous"></script>
+
+<script>
+    function randomNumber() {
+        return Math.floor(Math.random() * 256);
+    }
+
+    function getRandomHexColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+
+    function resetRandomColors() {
+        let colorItems = document.querySelectorAll('.detailsBoxContainer [property="color"]');
+        colorItems.forEach((colorItem) => {
+            if(colorItem.querySelector('.lockIcon').classList.contains("fa-lock")){
+                return; 
+            }
+
+            // COLORBOX COLORS -------------------------------------------------------
+            let redValue = randomNumber(); 
+            let blueValue = randomNumber(); 
+            let greenValue = randomNumber(); 
+
+            colorItem.querySelector('.redValue').setAttribute('value', redValue);
+            colorItem.querySelector('.blueValue').setAttribute('value', blueValue);
+            colorItem.querySelector('.greenValue').setAttribute('value', greenValue);
+
+            colorItem.querySelector('.redValue').value = redValue;
+            colorItem.querySelector('.blueValue').value = blueValue;
+            colorItem.querySelector('.greenValue').value = greenValue;
+            // COLORBOX COLORS -------------------------------------------------------
+
+            let borderColor = getRandomHexColor();
+            colorItem.querySelector('.border_color').setAttribute('value', borderColor);
+            colorItem.querySelector('.border_color').value = borderColor;
+        });
+    }
+
+    function copyCSS(text) {
+        console.log(text);
+        Swal.fire({
+            title: 'Copy these styles?: <br>' + text,
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire('CSS Copied!', '', 'success')
+            }
+        })
+
+        navigator.clipboard.writeText(text)
+        Swal.fire({
+            icon: 'success',
+            title: 'Your css is copied ↓',
+            text: text,
+            showConfirmButton: true,
+            timer: 4000
+        })
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            event.preventDefault();
+            console.log("space bar pressed");
+            resetRandomColors();
+        }   
+    });
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let parentElement = document.querySelector('.detailsBoxContainer');
+
+        parentElement.addEventListener('click', function(event) {
+            let target = event.target;
+
+            // Check if the clicked element or its parent is a lock button
+            if (target.classList.contains('lockButton') || target.parentElement.classList.contains('lockButton')) {
+                let lockIcon;
+
+                // Find the lock icon within the clicked element or its parent
+                if (target.classList.contains('lockButton')) {
+                    lockIcon = target.querySelector('.lockIcon');
+                } else {
+                    lockIcon = target.parentElement.querySelector('.lockIcon');
+                }
+
+                // Toggle the class for the lock icon
+                lockIcon.classList.toggle('fa-lock-open');
+                lockIcon.classList.toggle('fa-lock');
+            }
+        });
+    });
+</script>
+
+</html>
